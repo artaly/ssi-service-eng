@@ -50,8 +50,7 @@ if [[ $USED_MEMORY -ge $CRITICAL ]]; then
 	
 	EMAIL_SUBJECT="$CURRENT_DATE memory_check - critical"
 	TOP10_P=$(ps aux --sort=-%mem | head -n 11)
-	echo "$TOP10_P" | mail -v -s "$EMAIL_SUBJECT" -S smtp-use-starttls -S ssl-verify=ignore -S smtp-auth=login -S smtp=smtp://smtp.example.com:587 -S from="loauvre@gmail.com" -S smtp-auth-user="loauvre@gmail.com" -S smtp-auth-password="xbynxnvrwkfoxtnx" loauvre@gmail.com
-	
+	echo "$TOP10_P" | mail -v -s "$EMAIL_SUBJECT" $EMAIL	
 	exit 2
 elif [[ $USED_MEMORY -ge $WARNING && $USED_MEMORY -le $CRITICAL ]]; then
 	echo "Used memory is greater than or equal to warning threshold but less than critical threshold"

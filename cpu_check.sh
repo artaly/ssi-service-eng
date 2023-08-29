@@ -37,24 +37,23 @@ if [[ $CRITICAL -le $WARNING ]]; then
 	exit
 fi
 
-CPU_USAGE=$(top -bn 1 | grep '%Cpu' | awk '{print $2}' | sed 's/\..*//')
-USED_CPU=$((100 - CPU_USAGE))
-#USED_CPU=90
+CPU_USAGE=$(top -bn 1 | grep '%Cpu' | \sed "s/.*,*\([0-9.]*\)%* id.*/\1/" | \awk '{print 100 - $1}')
 
-if [[ $USED_CPU -ge $CRITICAL ]]; then
+if [[ $CPU_USAGE -ge $CRITICAL ]]; then
 	echo "Used CPU is greater than or equal to critical threshold!"
 	echo "CPU Usage: $CPU_USAGE"
-	echo "Used CPU: $USED_CPU"
 	
 	TOP_PROCESSES=$(ps aux --sort=-%mem | head -n 11 | tail -n +2)
 	echo "$TOP_PROCCESSES" | mail -v -s "$EMAIL_SUBJECT" $EMAIL
-	
-exit
-elif [[ $USED_CPU -ge $WARNING && USED_MEMORY -le $CRITICAL ]]; then
+
+	exit
+elif [[ $CPU_USAGE -ge $WARNING && $CPU_USAGE -le $CRITICAL ]]; then
 	echo "Used CPU is greater than or equal to warning threshold but less than critical threshold!"
+	echo "Used CPU: $CPU_USAGE"
 	exit 1
 else
 	echo "Used CPU is less then warning threshold"
+	echo "USED CPU: $CPU_USAGE"
 	exit 0
 fi
 
