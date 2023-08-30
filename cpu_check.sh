@@ -37,7 +37,7 @@ if [[ $CRITICAL -le $WARNING ]]; then
 	exit
 fi
 
-CPU_USAGE=$(top -bn 1 | grep '%Cpu' | \sed "s/.*,*\([0-9.]*\)%* id.*/\1/" | \awk '{print 100 - $1}')
+CPU_USAGE=$(top -bn1 | grep '%Cpu' | \sed "s/.*,*\([0-9.]*\)%* id.*/\1/" | \awk '{print 100 - $1}')
 
 if [[ $CPU_USAGE -ge $CRITICAL ]]; then
 	echo "Used CPU is greater than or equal to critical threshold!"
